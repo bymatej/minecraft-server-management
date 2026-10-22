@@ -26,9 +26,14 @@ SHA-256 supplied by GitHub's release API and checked on the downloaded file:
 ```
 
 The pinned file is staged in `.tools/downloads/AuthMe-5.7.0.jar`, not committed to Git.
-Reproduce both plugin downloads with `bash scripts/download-family-plugins.sh`.
-Upload only this selected AuthMe JAR to the family's `plugins` directory. Never leave
-multiple AuthMe builds there. The investigated 6.x assets are not installation choices.
+Download both reviewed assets with `bash scripts/download-auth-plugins.sh`. To install
+them into a stopped, supported Crafty Paper instance, run
+`bash scripts/install-auth-plugins.sh`. The installer reads Crafty's SQLite server
+catalog, displays names and ports (rather than opaque UUIDs), asks which server to
+use when there is more than one, and refuses unknown Minecraft/Paper versions. It is
+idempotent when the same files are already installed; a newly added, reviewed profile
+can replace older JARs. Never leave multiple AuthMe builds in one `plugins` directory.
+The investigated 6.x assets are not installation choices for Paper 1.21.4.
 
 ## Bootstrap, without a race to register names
 

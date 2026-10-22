@@ -97,6 +97,16 @@ JARs in that instance's **Files → plugins** directory, or Forge mods in **File
 Stop the instance before changing JARs, keep one version of each plugin, then start and
 check the console and `logs/latest.log`. The file manager also edits configuration.
 
+For the reviewed family Paper profile, the server-side alternative is:
+
+```bash
+bash scripts/install-auth-plugins.sh
+```
+
+The installer reads Crafty's catalog, shows server names and ports, selects the target
+when multiple servers exist, and refuses an unverified Minecraft/Paper version. It does
+not blindly install the 1.21.4 AuthMe build into a newer or unknown Paper instance.
+
 ## Family server: offline mode is intentional
 
 The children use offline-mode clients. `online-mode=false` stays, but a username

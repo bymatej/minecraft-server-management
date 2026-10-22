@@ -85,6 +85,15 @@ Stop the relevant instance. Open its **Files** tab, enter `plugins` for Paper/Sp
 doesn't exist, start the correctly configured server once privately to generate it,
 then stop. Never upload plugins into `/crafty/app/config` or another server's directory.
 
+When the JARs were downloaded on the VPS rather than on the workstation running the
+browser, they can be installed through the Compose bind mount instead. Stop the server
+first, then use `bash scripts/install-auth-plugins.sh`; it discovers Crafty server names
+and UUIDs from the read-only Crafty catalog, selects the target, verifies a supported
+version profile, and copies the JARs into that server's `plugins` directory. The host
+path is `runtime/servers/<server-id>/plugins`, while Crafty sees the same directory as
+`/crafty/servers/<server-id>/plugins`. This avoids copying into Crafty's application
+configuration directory.
+
 Start, inspect **Terminal** and **Logs** (also `logs/latest.log`). Stop again before
 editing a generated plugin's `plugins/PLUGIN/config.yml` through Files. For upgrades,
 first take a cold backup, download the old configuration/JAR as an additional quick

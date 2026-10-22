@@ -107,6 +107,14 @@ The installer reads Crafty's catalog, shows server names and ports, selects the 
 when multiple servers exist, and refuses an unverified Minecraft/Paper version. It does
 not blindly install the 1.21.4 AuthMe build into a newer or unknown Paper instance.
 
+That refusal is intentional. For example, a server whose Crafty update URL is
+`.../paper/26.2/paper.jar` is not treated as Paper 1.21.4, even if AuthMe JARs already
+exist in its `plugins` directory. The script validates the compatibility profile first,
+then checks whether the selected JAR versions are already installed. To use the pinned
+family profile, create/configure the instance as Paper 1.21.4. To keep a newer Paper
+instance, add a separately reviewed plugin profile; do not override the check or assume
+that the latest plugin works with every Minecraft release.
+
 ## Family server: offline mode is intentional
 
 The children use offline-mode clients. `online-mode=false` stays, but a username

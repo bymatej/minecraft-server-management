@@ -1,0 +1,42 @@
+# MERGE these values into the generated AuthMe 5.7.0 config.yml while stopped.
+# This is a reviewed settings overlay, not a replacement for the entire upstream config.
+DataSource:
+  backend: SQLITE
+settings:
+  sessions:
+    enabled: false
+  logLevel: INFO
+  preventOtherCase: true
+  restrictions:
+    allowChat: false
+    allowCommands: [/login, /l, /register, /reg, /captcha, /2fa, /totp]
+    allowMovement: false
+    ForceSingleSession: true
+    kickOnWrongPassword: true
+    timeout: 120
+    maxRegPerIp: 4
+    UnrestrictedName: []
+    UnrestrictedInventories: []
+  security:
+    minPasswordLength: 12
+    passwordMaxLength: 64
+    passwordHash: BCRYPT
+    legacyHashes: []
+  registration:
+    enabled: true
+    force: true
+    forceLoginAfterRegister: true
+    type: PASSWORD
+    secondArg: CONFIRMATION
+Hooks:
+  bungeecord: false
+Security:
+  SQLProblem:
+    stopServer: true
+  tempban:
+    enableTempban: true
+    maxLoginTries: 5
+    tempbanLength: 10
+    minutesBeforeCounterReset: 10
+Purge:
+  useAutoPurge: false

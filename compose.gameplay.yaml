@@ -1,0 +1,8 @@
+# Activate deliberately after resolving old-container port conflicts.
+# All bindings default to loopback. Open each individually after acceptance tests.
+services:
+  crafty:
+    ports:
+      - "${VANILLA_BIND:-127.0.0.1}:${VANILLA_PORT:-25565}:${VANILLA_PORT:-25565}/tcp"
+      - "${FAMILY_BIND:-127.0.0.1}:${FAMILY_PORT:-25566}:${FAMILY_PORT:-25566}/tcp"
+      - "${FORGE_BIND:-127.0.0.1}:${FORGE_PORT:-25567}:${FORGE_PORT:-25567}/tcp"

@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Crafty backup maintenance window
+
+[Timer]
+OnCalendar=*-*-* 05:15:00 Europe/Zagreb
+Persistent=false
+AccuracySec=1m
+Unit=minecraft-backup.service
+
+[Install]
+WantedBy=timers.target

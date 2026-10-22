@@ -1,0 +1,7 @@
+# Merge into CoreProtect CE 24.1's generated config while the instance is stopped.
+use-mysql: false
+block-place: true
+block-break: true
+item-transactions: true
+player-messages: false
+player-commands: false

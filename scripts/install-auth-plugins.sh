@@ -5,6 +5,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 DB="$ROOT/runtime/config/db/crafty.sqlite"
+DOWNLOAD_DIR="$ROOT/.tools/downloads"
 
 if [[ ! -r "$DB" ]]; then
   echo "ERROR: Crafty database not found: $DB" >&2
@@ -70,9 +71,22 @@ fi
 plugin_dir="$host_path/plugins"
 mkdir -p "$plugin_dir"
 
-download="$ROOT/.tools/downloads"
-if [[ ! -f "$download/AuthMe-5.7.0.jar" || ! -f "$download/CoreProtect-CE-24.1.jar" ]]; then
-  "$ROOT/scripts/download-auth-plugins.sh"
+mkdir -p "$DOWNLOAD_DIR"
+if [[ ! -f "$DOWNLOAD_DIR/AuthMe-5.7.0.jar" ]]; then
+  echo 'Downloading and verifying AuthMe 5.7.0...'
+  curl --fail --location --proto '=https' --tlsv1.2 \
+    https://github.com/AuthMe/AuthMeReloaded/releases/download/5.7.0/AuthMe-5.7.0.jar \
+    -o "$DOWNLOAD_DIR/AuthMe-5.7.0.jar.part"
+  printf '%s\n' '67cc5c1923315cedc152616abce81cf79d004d44cb8fe9ab4d0b262728f23e08  '"$DOWNLOAD_DIR"'/AuthMe-5.7.0.jar.part' | sha256sum --check
+  mv "$DOWNLOAD_DIR/AuthMe-5.7.0.jar.part" "$DOWNLOAD_DIR/AuthMe-5.7.0.jar"
+fi
+if [[ ! -f "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar" ]]; then
+  echo 'Downloading and verifying CoreProtect CE 24.1...'
+  curl --fail --location --proto '=https' --tlsv1.2 \
+    https://cdn.modrinth.com/data/Lu3KuzdV/versions/3sehX6Sg/CoreProtect-CE-24.1.jar \
+    -o "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar.part"
+  printf '%s\n' '76aad727528ddb990bbee5069f8ef3fcd018ae0bcdea89b965be2485e828633eb068672e841be64e550c8474f901a24d8c15c7bd44c2bd6c96244e1e58de0c95  '"$DOWNLOAD_DIR"'/CoreProtect-CE-24.1.jar.part' | sha512sum --check
+  mv "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar.part" "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar"
 fi
 
 same=1
@@ -88,7 +102,7 @@ for old in "$plugin_dir"/AuthMe-*.jar "$plugin_dir"/CoreProtect*.jar; do
   echo "Replacing old plugin: $(basename "$old")"
   rm -f -- "$old"
 done
-install -m 0644 "$download/AuthMe-5.7.0.jar" "$plugin_dir/"
-install -m 0644 "$download/CoreProtect-CE-24.1.jar" "$plugin_dir/"
+install -m 0644 "$DOWNLOAD_DIR/AuthMe-5.7.0.jar" "$plugin_dir/"
+install -m 0644 "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar" "$plugin_dir/"
 echo "Installed AuthMe 5.7.0 and CoreProtect CE 24.1 into '$server_name'."
 echo 'Start the server in Crafty and inspect its console; keep it private until AuthMe tests pass.'

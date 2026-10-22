@@ -106,15 +106,15 @@ bash scripts/install-auth-plugins.sh
 
 The installer reads Crafty's catalog, shows server names and ports, selects the target
 when multiple servers exist, and refuses an unverified Minecraft/Paper version. It does
-not blindly install the 1.21.4 AuthMe build into a newer or unknown Paper instance.
+not blindly install the pinned AuthMe build into a newer or unknown Paper instance.
 
-That refusal is intentional. For example, a server whose Crafty update URL is
-`.../paper/26.2/paper.jar` is not treated as Paper 1.21.4, even if AuthMe JARs already
-exist in its `plugins` directory. The script validates the compatibility profile first,
-then checks whether the selected JAR versions are already installed. To use the pinned
-family profile, create/configure the instance as Paper 1.21.4. To keep a newer Paper
-instance, add a separately reviewed plugin profile; do not override the check or assume
-that the latest plugin works with every Minecraft release.
+That refusal is intentional. The script currently has explicit profiles for Paper
+1.21.4 and a Paper 26.2 runtime-tested profile. A server whose Crafty update URL is
+unknown is refused even if AuthMe JARs already exist in its `plugins` directory. The
+script validates the compatibility profile first, then checks whether the selected JAR
+versions are already installed. Paper 26.2 still requires the full AuthMe registration,
+impersonation, restart and gameplay test matrix before family use; do not assume that
+the latest plugin works with every Minecraft release.
 
 ## Family server: offline mode is intentional
 

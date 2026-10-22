@@ -52,12 +52,21 @@ fi
 profile=''
 if [[ "$update_url" == */paper/1.21.4/* ]]; then
   profile='paper-1.21.4'
+elif [[ "$update_url" == */paper/26.2/* ]]; then
+  # AuthMe 5.7.0 and CoreProtect CE 24.1 both loaded successfully in the
+  # deployed Paper 26.2 smoke test. Keep this explicit; do not generalize it
+  # to arbitrary future Paper catalog entries without another test.
+  profile='paper-26.2-runtime-tested'
 fi
 if [[ -z "$profile" ]]; then
   echo "ERROR: no verified AuthMe/CoreProtect profile for '$server_name'." >&2
   echo "       Crafty reports update URL: ${update_url:-unknown}" >&2
   echo '       Do not install the 1.21.4 AuthMe build into this server.' >&2
   exit 1
+fi
+if [[ "$profile" == paper-26.2-runtime-tested ]]; then
+  echo "WARNING: Paper 26.2 is runtime-tested for plugin loading, but the full AuthMe"
+  echo '         registration, impersonation, restart and gameplay test matrix remains required.'
 fi
 
 # The Compose bind mount maps Crafty's /crafty/servers to this host directory.

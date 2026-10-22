@@ -1,8 +1,9 @@
 # Networking and cutover
 
 Current `docker compose up -d` starts the panel only. Minecraft may listen within
-the container, but no gameplay port is published. A separate file adds exactly three
-TCP mappings; they default to loopback. No Nginx HTTP or stream proxy is involved.
+the container, but no gameplay port is published. The optional Nginx management route
+is separate and does not alter Minecraft TCP routing. A separate file adds exactly three
+TCP mappings; they default to loopback. No Nginx Minecraft HTTP or stream proxy is involved.
 
 ## Private bootstrap while the old servers run
 

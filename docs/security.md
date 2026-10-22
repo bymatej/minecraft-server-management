@@ -1,9 +1,11 @@
 # Administration and trust boundary
 
-Crafty is bound to `127.0.0.1:8443`. No IPv6 wildcard, reverse proxy, RCON, JMX or
-Query publication is configured. Use the SSH tunnel in the README. SSH is on port 22
-on this host; preserve host-key verification. On shared client machines, bind the
-local tunnel to 127.0.0.1 too.
+Crafty remains bound to `127.0.0.1:8443`. An optional Nginx route in the separate
+`contabo-vps-notes` repository exposes it at `https://crafty.bymatej.com` only after
+DNS, a Let's Encrypt certificate and `/etc/nginx/.htpasswd-crafty` are provisioned.
+It adds Basic Auth before Crafty's own password/TOTP. Until those prerequisites are
+deployed, use the SSH tunnel in the README. SSH is on port 22 on this host; preserve
+host-key verification. On shared client machines, bind the local tunnel to 127.0.0.1 too.
 
 The generated login file is `runtime/config/default-creds.txt` (inside the container:
 `/crafty/app/config/default-creds.txt`). Read it privately, change the password on first

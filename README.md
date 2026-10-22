@@ -71,7 +71,10 @@ over your trusted SSH connection as described in [security](docs/security.md).
 Read `runtime/config/default-creds.txt` privately on the VPS for initial credentials;
 do not paste that file into chat, tickets or logs. Change the administrator password,
 then enable TOTP under **Account Settings → Multi Factor Auth**. Save recovery codes
-in your password manager. Do not forward the panel through the old Nginx routes.
+in your password manager. The optional public route is prepared in the separate
+`contabo-vps-notes` repository at `https://crafty.bymatej.com`; it remains inactive
+until DNS, a Let's Encrypt certificate and `/etc/nginx/.htpasswd-crafty` exist. Basic
+Auth is an additional layer before Crafty's password and TOTP.
 
 ## Everyday use
 

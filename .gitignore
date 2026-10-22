@@ -442,3 +442,11 @@ $RECYCLE.BIN/
 *.tar.gz
 *.zip
 *.tmp
+
+# Crafty/Minecraft runtime data (never commit worlds, servers, plugins, or downloads).
+runtime/servers/
+runtime/config/
+runtime/backups/
+runtime/logs/
+runtime/import/
+.tools/downloads/

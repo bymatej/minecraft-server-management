@@ -43,9 +43,9 @@ started in Crafty. The old `25565` container remains untouched. The local `.env`
 the unused Vanilla/Forge mappings on loopback placeholder ports to avoid collisions.
 
 This is a controlled test exposure, not the completed family cutover: the test server
-reports Paper `26.2`, while the reviewed AuthMe profile is only for Paper 1.21.4.
-Keep real family accounts off it until a compatible AuthMe profile passes the full test
-matrix.
+reports Paper `26.2`. The installer selects AuthMe `6.0.1` Paper and CoreProtect CE
+`24.1` for that version, but real family accounts must remain off it until the full
+registration, impersonation, restart and gameplay test matrix passes.
 
 ## Final cutover
 

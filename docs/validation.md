@@ -20,8 +20,8 @@
   container recreation retains configuration, DB and generated credential file.
 - Roughly 90 MiB steady-state container memory before Minecraft instances. Host remains
   at approximately 5.3 GiB available RAM with no swap in use; no OOM observed.
-- Official plugin downloads and checksums verified: AuthMe 5.7.0 SHA-256 and
-  CoreProtect CE 24.1 SHA-512. JAR manifests inspected; staged files are private,
+- Official plugin downloads and checksums verified: AuthMe 5.7.0 and 6.0.1 Paper
+  SHA-256 assets, plus CoreProtect CE 24.1 SHA-512. JAR manifests inspected; staged files are private,
   ignored and **not installed into a server**.
 - Full real cold snapshot created: initial rotation snapshot `586cff81`. Separate
   baseline snapshot `91798519`. These are **panel-only** recovery points, not world

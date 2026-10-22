@@ -32,14 +32,15 @@ Run `bash scripts/install-auth-plugins.sh` for the reviewed plugin installation 
 It discovers Crafty servers by name, selects a target, downloads checksum-verified JARs,
 and installs only a reviewed compatibility profile.
 
-The profiles are AuthMe 5.7.0 plus CoreProtect CE 24.1 for Paper 1.21.4, and an
-explicit Paper 26.2 runtime-tested profile. The 26.2 profile only proves that both JARs
-loaded in the observed deployment; its full AuthMe registration, impersonation,
-restart and gameplay matrix remains required. The installer must refuse other unknown
-Paper versions. Do not weaken that check, force a JAR to load by editing metadata, or
-assume that a plugin's latest release supports every Minecraft version. Add a new
-profile only after checking the exact server version, plugin manifest, release notes,
-and real startup/gameplay tests.
+The manifest selects AuthMe 5.7.0 plus CoreProtect CE 24.1 for Paper 1.21.4, and
+AuthMe 6.0.1 Paper plus CoreProtect CE 24.1 for Paper 26.2. The installer derives the
+Minecraft/Paper version from Crafty's update URL, verifies selected checksums, and
+replaces mismatched plugin JARs. The 26.2 profile has passed plugin-load smoke testing;
+its full AuthMe registration, impersonation, restart and gameplay matrix remains
+required. The installer must refuse other unknown Paper versions. Do not weaken that
+check, force a JAR to load by editing metadata, or assume that a plugin's latest release
+supports every Minecraft version. Add a new profile only after checking the exact
+server version, plugin manifest, release notes, and real startup/gameplay tests.
 
 An error such as `no verified AuthMe/CoreProtect profile` is a safety result, not a
 missing-file error. Leave the server private until compatibility and AuthMe registration

@@ -47,26 +47,49 @@ if [[ "$server_type" != minecraft-java ]]; then
   exit 1
 fi
 
-# This is deliberately a reviewed compatibility profile, not a blind latest-version installer.
-# Add a new profile only after checking the plugin manifests against the exact server version.
-profile=''
-if [[ "$update_url" == */paper/1.21.4/* ]]; then
-  profile='paper-1.21.4'
-elif [[ "$update_url" == */paper/26.2/* ]]; then
-  # AuthMe 5.7.0 and CoreProtect CE 24.1 both loaded successfully in the
-  # deployed Paper 26.2 smoke test. Keep this explicit; do not generalize it
-  # to arbitrary future Paper catalog entries without another test.
-  profile='paper-26.2-runtime-tested'
+# Crafty's update URL carries the selected Minecraft/Paper version. Do not use the
+# jar filename or the server name: both can be changed independently of the version.
+if [[ "$update_url" =~ /paper/([^/]+)/paper\.jar ]]; then
+  minecraft_version="${BASH_REMATCH[1]}"
+else
+  minecraft_version=''
 fi
-if [[ -z "$profile" ]]; then
+
+# This is a reviewed compatibility manifest, not a blind latest-version installer.
+# Add a mapping only after checking the exact plugin release/manifests and testing it.
+authme_version=''
+authme_url=''
+authme_sha256=''
+coreprotect_version='24.1'
+coreprotect_url='https://cdn.modrinth.com/data/Lu3KuzdV/versions/3sehX6Sg/CoreProtect-CE-24.1.jar'
+coreprotect_sha512='76aad727528ddb990bbee5069f8ef3fcd018ae0bcdea89b965be2485e828633eb068672e841be64e550c8474f901a24d8c15c7bd44c2bd6c96244e1e58de0c95'
+
+case "$minecraft_version" in
+  1.21.4)
+    authme_version='5.7.0'
+    authme_url='https://github.com/AuthMe/AuthMeReloaded/releases/download/5.7.0/AuthMe-5.7.0.jar'
+    authme_sha256='67cc5c1923315cedc152616abce81cf79d004d44cb8fe9ab4d0b262728f23e08'
+    ;;
+  26.2)
+    # AuthMe 6.0.1 Paper declares support through the 26.2 line. CoreProtect CE
+    # 24.1 is the matching reviewed release for 26.2. Full gameplay/security tests
+    # are still required before using this profile for the family server.
+    authme_version='6.0.1'
+    authme_url='https://github.com/AuthMe/AuthMeReloaded/releases/download/6.0.1/AuthMe-6.0.1-Paper.jar'
+    authme_sha256='7704335e9e73a634d9d926344f77897f4c74f78f82453a59f5aa0f8d2722450a'
+    ;;
+esac
+
+if [[ -z "$authme_version" ]]; then
   echo "ERROR: no verified AuthMe/CoreProtect profile for '$server_name'." >&2
   echo "       Crafty reports update URL: ${update_url:-unknown}" >&2
-  echo '       Do not install the 1.21.4 AuthMe build into this server.' >&2
+  echo '       The detected Paper version is not present in the compatibility manifest.' >&2
   exit 1
 fi
-if [[ "$profile" == paper-26.2-runtime-tested ]]; then
-  echo "WARNING: Paper 26.2 is runtime-tested for plugin loading, but the full AuthMe"
-  echo '         registration, impersonation, restart and gameplay test matrix remains required.'
+echo "Detected Paper/Minecraft version: $minecraft_version"
+echo "Selected AuthMe $authme_version and CoreProtect CE $coreprotect_version"
+if [[ "$minecraft_version" == 26.2 ]]; then
+  echo 'WARNING: complete AuthMe registration, impersonation, restart and gameplay tests remain required.'
 fi
 
 # The Compose bind mount maps Crafty's /crafty/servers to this host directory.
@@ -81,28 +104,28 @@ plugin_dir="$host_path/plugins"
 mkdir -p "$plugin_dir"
 
 mkdir -p "$DOWNLOAD_DIR"
-if [[ ! -f "$DOWNLOAD_DIR/AuthMe-5.7.0.jar" ]]; then
-  echo 'Downloading and verifying AuthMe 5.7.0...'
+authme_jar="$DOWNLOAD_DIR/AuthMe-$authme_version.jar"
+if [[ ! -f "$authme_jar" ]] || [[ "$(sha256sum "$authme_jar" | awk '{print $1}')" != "$authme_sha256" ]]; then
+  echo "Downloading and verifying AuthMe $authme_version..."
   curl --fail --location --proto '=https' --tlsv1.2 \
-    https://github.com/AuthMe/AuthMeReloaded/releases/download/5.7.0/AuthMe-5.7.0.jar \
-    -o "$DOWNLOAD_DIR/AuthMe-5.7.0.jar.part"
-  printf '%s\n' '67cc5c1923315cedc152616abce81cf79d004d44cb8fe9ab4d0b262728f23e08  '"$DOWNLOAD_DIR"'/AuthMe-5.7.0.jar.part' | sha256sum --check
-  mv "$DOWNLOAD_DIR/AuthMe-5.7.0.jar.part" "$DOWNLOAD_DIR/AuthMe-5.7.0.jar"
+    "$authme_url" -o "$authme_jar.part"
+  printf '%s  %s\n' "$authme_sha256" "$authme_jar.part" | sha256sum --check
+  mv "$authme_jar.part" "$authme_jar"
 fi
-if [[ ! -f "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar" ]]; then
+coreprotect_jar="$DOWNLOAD_DIR/CoreProtect-CE-$coreprotect_version.jar"
+if [[ ! -f "$coreprotect_jar" ]] || [[ "$(sha512sum "$coreprotect_jar" | awk '{print $1}')" != "$coreprotect_sha512" ]]; then
   echo 'Downloading and verifying CoreProtect CE 24.1...'
   curl --fail --location --proto '=https' --tlsv1.2 \
-    https://cdn.modrinth.com/data/Lu3KuzdV/versions/3sehX6Sg/CoreProtect-CE-24.1.jar \
-    -o "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar.part"
-  printf '%s\n' '76aad727528ddb990bbee5069f8ef3fcd018ae0bcdea89b965be2485e828633eb068672e841be64e550c8474f901a24d8c15c7bd44c2bd6c96244e1e58de0c95  '"$DOWNLOAD_DIR"'/CoreProtect-CE-24.1.jar.part' | sha512sum --check
-  mv "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar.part" "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar"
+    "$coreprotect_url" -o "$coreprotect_jar.part"
+  printf '%s  %s\n' "$coreprotect_sha512" "$coreprotect_jar.part" | sha512sum --check
+  mv "$coreprotect_jar.part" "$coreprotect_jar"
 fi
 
 same=1
-[[ -f "$plugin_dir/AuthMe-5.7.0.jar" ]] || same=0
-[[ -f "$plugin_dir/CoreProtect-CE-24.1.jar" ]] || same=0
+[[ -f "$plugin_dir/AuthMe-$authme_version.jar" ]] || same=0
+[[ -f "$plugin_dir/CoreProtect-CE-$coreprotect_version.jar" ]] || same=0
 if ((same)); then
-  echo "Already installed for '$server_name': AuthMe 5.7.0 and CoreProtect CE 24.1."
+  echo "Already installed for '$server_name': AuthMe $authme_version and CoreProtect CE $coreprotect_version."
   exit 0
 fi
 
@@ -111,7 +134,7 @@ for old in "$plugin_dir"/AuthMe-*.jar "$plugin_dir"/CoreProtect*.jar; do
   echo "Replacing old plugin: $(basename "$old")"
   rm -f -- "$old"
 done
-install -m 0644 "$DOWNLOAD_DIR/AuthMe-5.7.0.jar" "$plugin_dir/"
-install -m 0644 "$DOWNLOAD_DIR/CoreProtect-CE-24.1.jar" "$plugin_dir/"
-echo "Installed AuthMe 5.7.0 and CoreProtect CE 24.1 into '$server_name'."
+install -m 0644 "$authme_jar" "$plugin_dir/"
+install -m 0644 "$coreprotect_jar" "$plugin_dir/"
+echo "Installed AuthMe $authme_version and CoreProtect CE $coreprotect_version into '$server_name'."
 echo 'Start the server in Crafty and inspect its console; keep it private until AuthMe tests pass.'

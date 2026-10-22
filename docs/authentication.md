@@ -16,6 +16,12 @@ older release has no vulnerabilities. If it fails any test, keep the port privat
 A future Minecraft upgrade should use the matching current stable AuthMe build and
 repeat the full acceptance sequence; do not upgrade the requested version silently.
 
+For current Paper `26.2`, the installer detects that version from Crafty's
+`executable_update_url` and selects the Paper-specific **AuthMe 6.0.1** asset plus
+CoreProtect CE 24.1. The 6.0.1 Paper asset is not interchangeable with the 5.7.0
+1.21.4 asset. Unknown versions are refused until an explicit compatibility mapping is
+reviewed and tested.
+
 Official download:
 https://github.com/AuthMe/AuthMeReloaded/releases/download/5.7.0/AuthMe-5.7.0.jar
 

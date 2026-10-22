@@ -11,11 +11,12 @@ encrypted recovery copies. No custom image, extra database, marketplace or file 
 
 ## Current deployment
 
-Crafty is staged alongside the old servers, with **only 127.0.0.1:8443 published**.
-The audit found both old Minecraft containers running on 25565 and 25566; they have
-not been stopped or migrated. `server2.bymatej.com:25566` still reaches the old server.
-See [the preflight report](docs/preflight.md) and [test results](docs/validation.md).
-The new family server must not be public until its authentication tests pass.
+Crafty publishes its management UI only on `127.0.0.1:8443` and the current test
+instance on public TCP `25566`. The old `McMyAdmin_1.21.4_paper_matija` container was
+stopped but retained for rollback; the old `25565` container remains untouched.
+Therefore `server2.bymatej.com:25566` now targets Crafty's test instance. This test
+instance is not yet an approved family deployment: its Paper version has no reviewed
+AuthMe profile, so do not use it for real offline-mode family accounts.
 
 ## How it fits together
 

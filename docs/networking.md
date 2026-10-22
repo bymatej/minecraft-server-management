@@ -34,7 +34,20 @@ VPN requirement for normal play. Finish all [authentication tests](authenticatio
 before public access. Connections through SSH share a source IP; disable AuthMe
 sessions and keep the registration-per-IP limit sufficient for four family accounts.
 
-## Final cutover (not performed)
+## Current test cutover
+
+The old `McMyAdmin_1.21.4_paper_matija` container was stopped (not removed), and the
+Crafty gameplay overlay currently publishes the test instance as `0.0.0.0:25566`.
+The direct address is therefore `server2.bymatej.com:25566` once the instance is
+started in Crafty. The old `25565` container remains untouched. The local `.env` keeps
+the unused Vanilla/Forge mappings on loopback placeholder ports to avoid collisions.
+
+This is a controlled test exposure, not the completed family cutover: the test server
+reports Paper `26.2`, while the reviewed AuthMe profile is only for Paper 1.21.4.
+Keep real family accounts off it until a compatible AuthMe profile passes the full test
+matrix.
+
+## Final cutover
 
 1. Confirm old servers' players/owners and schedule downtime. Preserve their volumes
    and take a verified cold backup before any retirement. Do not import the old world
